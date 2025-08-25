@@ -5,7 +5,7 @@ services:
     image: php:8.2-apache
     container_name: fake_php
     ports:
-      - "${PHP_PORT}:80"  # PHP disponible en puerto definido en .env
+      - "${PHP_PORT}:80"
     volumes:
       - ./fake_site:/var/www/html
     env_file:
@@ -14,7 +14,7 @@ services:
       - fake_mysql
     restart: unless-stopped
     networks:
-      - network1   # red externa Nginx Proxy Manager
+      - network1
 
   fake_mysql:
     image: mysql:8.0
@@ -27,14 +27,15 @@ services:
       MYSQL_USER: ${DB_USER}
       MYSQL_PASSWORD: ${DB_PASS}
     ports:
-      - "${DB_EXTERNAL_PORT}:3306"  # puerto externo de la VPS/local
+      - "${DB_EXTERNAL_PORT}:3306"
     volumes:
       - ./mysql_data:/var/lib/mysql
+      - ./mysql-init:/docker-entrypoint-initdb.d   # <<< inicialización automática
     restart: unless-stopped
     networks:
-      - network1   # opcional, para que NPM pueda ver el contenedor si hace falta
+      - network1
 
 networks:
   network1:
-    name: ${RED_NOW}   # usamos la red de Nginx Proxy Manager
+    name: ${RED_NOW}
     external: true
