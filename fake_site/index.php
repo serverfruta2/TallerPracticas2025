@@ -46,7 +46,7 @@
             <div class="full">
               <div class="center-desk">
                 <div class="logo">
-                  <a href="../index.php">
+                  <a href="index.php">
                     <img src="assets/vendor/images/logo.png" alt="Logo Cooperar" />
                     <span style="font-size: 26px">Cooperar</span>
                   </a>
