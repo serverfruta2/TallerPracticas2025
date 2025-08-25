@@ -1,0 +1,16 @@
+# Datos persistentes de MySQL
+mysql_data/
+
+# Archivos de entorno
+.env
+
+# Dependencias de PHP/Composer
+vendor/
+
+# Logs y temporales de PHP
+*.log
+*.tmp
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db

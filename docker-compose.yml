@@ -1,0 +1,31 @@
+version: "3.9"
+
+services:
+  fake_php:
+    image: php:8.2-apache
+    container_name: fake_php
+    ports:
+      - "8086:80"  # PHP disponible en puerto 8086
+    volumes:
+      - ./fake_site:/var/www/html
+    env_file:
+      - ./.env
+    depends_on:
+      - fake_mysql
+    restart: unless-stopped
+
+  fake_mysql:
+    image: mysql:8.0
+    container_name: fake_mysql
+    env_file:
+      - ./.env
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASS}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASS}
+    ports:
+      - "${DB_EXTERNAL_PORT}:3306"  # puerto externo de la VPS/local
+    volumes:
+      - ./mysql_data:/var/lib/mysql
+    restart: unless-stopped
