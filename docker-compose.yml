@@ -2,12 +2,12 @@ version: "3.9"
 
 services:
   fake_php:
-    build:
-      context: ./fake_site   # apunta a la carpeta donde estará el Dockerfile
-      dockerfile: Dockerfile
+    image: php:8.2-apache
     container_name: fake_php
     ports:
       - "${PHP_PORT}:80"
+    volumes:
+      - ./fake_site:/var/www/html
     env_file:
       - ./.env
     depends_on:
