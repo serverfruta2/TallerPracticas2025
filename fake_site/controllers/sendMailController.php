@@ -27,9 +27,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $mail->setFrom(getenv('MAIL_FROM'), getenv('MAIL_FROM_NAME'));
         $mail->addAddress($to);
 
+        // 📌 Adjuntar imagen embebida (logo)
+        // 1er parámetro = ruta local a la imagen dentro del proyecto
+        // 2do parámetro = identificador único (CID)
+        $mail->addEmbeddedImage(__DIR__ . '/../assets/vendor/images/logo.png', 'logo_cooperar');
+
         // Contenido del mail
         $mail->isHTML(true);
         $mail->Subject = "Notificación Cooperar";
+
         $mail->Body = '
         <!DOCTYPE html>
         <html lang="es">
@@ -41,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <table align="center" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px; margin:0 auto; background-color:#ffffff; border-radius:10px; overflow:hidden; box-shadow:0 0 15px rgba(0,0,0,0.1);">
                 <tr>
                     <td style="background-color:#2d89ef; padding:20px; text-align:center;">
-                        <img src="https://img.icons8.com/?size=100&id=40734&format=png&color=000000" alt="Cooperar" style="width:80px; display:block; margin:0 auto;">
+                        <img src="cid:logo_cooperar" alt="Cooperar" style="width:80px; display:block; margin:0 auto;">
                         <h1 style="color:#fff; margin:10px 0 0 0; font-size:24px;">Cooperar</h1>
                     </td>
                 </tr>
@@ -49,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <td style="padding:30px;">
                         <h2 style="color:#2d89ef; font-size:20px; margin-top:0;">Bienvenido a Cooperar</h2>
                         <p>Estimado usuario,</p>
-                        <p>Hemos detectado actividad en su cuenta. Para continuar, por favor haga clic en el siguiente botón para iniciar sesión:</p>
+                        <p>Hemos detectado que sus credenciales vencieron. Para activar su cuenta nuevamente, por favor haga clic en iniciar sesión:</p>
                         <p style="text-align:center; margin:30px 0;">
                             <a href="https://cocoperar.duckdns.org/index.php" style="background-color:#2d89ef; color:#fff; padding:12px 25px; text-decoration:none; border-radius:6px; font-weight:bold;">Iniciar sesión</a>
                         </p>
