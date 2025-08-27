@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <table align="center" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px; margin:0 auto; background-color:#ffffff; border-radius:10px; overflow:hidden; box-shadow:0 0 15px rgba(0,0,0,0.1);">
                 <tr>
                     <td style="background-color:#2d89ef; padding:20px; text-align:center;">
-                        <img src="https://cooperar.duckdns.org/assets/vendor/images/logo.png" alt="Cooperar" style="width:80px; display:block; margin:0 auto;">
+                        <img src="https://img.icons8.com/?size=100&id=40734&format=png&color=000000" alt="Cooperar" style="width:80px; display:block; margin:0 auto;">
                         <h1 style="color:#fff; margin:10px 0 0 0; font-size:24px;">Cooperar</h1>
                     </td>
                 </tr>
